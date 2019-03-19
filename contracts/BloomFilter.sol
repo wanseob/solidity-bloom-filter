@@ -12,22 +12,23 @@ library BloomFilter {
         else return 255;
     }
 
-    function addToBitmap(uint256 _bitmap,  uint8 _hashCount, bytes32 _item) public pure returns(uint256) {
-        require(_hashCount > 0);
+    function addToBitmap(uint256 _bitmap,  uint8 _hashCount, bytes32 _item) public pure returns(uint256 _newBitmap) {
+        _newBitmap = _bitmap;
+        require(_hashCount > 0, "Hash count can not be zero");
         for(uint i = 0; i < _hashCount; i++) {
             uint256 position = uint256(keccak256(abi.encodePacked(_item, i))) % 256;
-            require(position < 256);
+            require(position < 256, "Overflow error");
             uint256 digest = 1 << position;
-            _bitmap = _bitmap | digest;
+            _newBitmap = _newBitmap | digest;
         }
-        return _bitmap;
+        return _newBitmap;
     }
 
     function falsePositive(uint256 _bitmap,  uint8 _hashCount, bytes32 _item) public pure returns(bool _probablyPresent){
-        require(_hashCount > 0);
+        require(_hashCount > 0, "Hash count can not be zero");
         for(uint i = 0; i < _hashCount; i++) {
             uint256 position = uint256(keccak256(abi.encodePacked(_item, i))) % 256;
-            require(position < 256);
+            require(position < 256, "Overflow error");
             uint256 digest = 1 << position;
             if(_bitmap != _bitmap | digest) return false;
         }

@@ -8,7 +8,7 @@
   "description": "This is a 256 bit based bloom filter library written in Solidity",
   "scripts": {
     "postinstall": "chmod +x scripts/*",
-    "standard": ".\"/node_modules/.bin/standard\" test/** src/** --fix",
+    "standard": ".\"/node_modules/.bin/standard\" test/**/*.js src/** --fix",
     "ethlint": ".\"/node_modules/.bin/solium\" -d contracts --fix",
     "precommit": "lint-staged && npm run test",
     "test": ".\"/scripts/test_contracts.sh\""
