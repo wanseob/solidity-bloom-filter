@@ -1,0 +1,60 @@
+language: node_js
+node_js:
+  - "stable"
+
+install:
+  - npm install
+
+script:
+  - npm run test
+
+after_success:
+  - export CURRENT_VERSION=$(node -p "require('./package.json').version")
+  - export LATEST=$(npm view $(node -p "require('./package.json').name") dist-tags.latest)
+  - export NEXT=$(npm view $(node -p "require('./package.json').name") dist-tags.next)
+
+before_deploy:
+  - if [ "$LATEST" != "$CURRENT_VERSION" ] && [ "$TRAVIS_BRANCH" = "master" ]; then
+      echo "on master branch";
+      export TRAVIS_TAG=v$CURRENT_VERSION;
+    fi;
+  - if [ "$NEXT" != "$CURRENT_VERSION" ] && [ "$TRAVIS_BRANCH" = "develop" ]; then
+      echo "on develop branch";
+      export TRAVIS_TAG=v$CURRENT_VERSION-next;
+    fi;
+
+deploy:
+  - provider: npm
+    email: email@wanseob.com
+    api_key:
+      secure: e6XR8yhfx7MqcX0v4JcAARawdGi4oP0txWMTsxUPKxL5TkuHQLWWkEC8lEtY88U4uiNORLnMm3BlXJpejJ5DCqyo7JlMEtocOaDMcdIPPivSYWW/XXTJ8kSwT5E/bdY1nrZWmZ5ccAnOMFChOzJj3SMW42ApyaYNXSq8FMdtnXwdaaro4zLabXoUQSYscrczHZfZvkgRlLkWAByxDBChcnnhKRWfAyuOYhTXIi2r+QBbp4j3gr7qgKdQ35ENpkHm9eA/DbqXum9v7iOVkpU41ZbwvrPw/E8LbiCe1JybX18lrlt0+0Jg8dsZXFfXthCdDKuym2+JB4FK6EXvsBFMMHLsCm3mLjBxnhtmFrwr8K3cJMbtfxI1JT2g2H18QKdco58LvBYjcR8q6JDevgs9JefHRlBDA0Sr4Gr3WBE3vWT+lkqpRHK84s5Kwjv0oHVI+Oiy7hQIQSOWPVlgO8FxSFpHPsVyehjHTymeLEiMnvZRu9/bA+wz6meTT6QUVpl8Aiusqq09+ViyRL/mkWMmwWM+d1TFEDwiKDM8WEzRk0TGj2d0l0gj9zKqEBDLPF/FkrvpTQ6NdeQ6cK8JE1otlxV4tz+vHNWZNpGJn7wqKl+qWrrle1amZH0YBjwJb1IUfvJ6THJYBuybV/C+gVCssUb2dJjPSiv/K3ewn8z8l0A=
+    tag: next
+    on:
+      condition: $NEXT != $CURRENT_VERSION
+      branch: develop
+      repo: wanseob/solidity-bloom-filter
+  - provider: npm
+    email: email@wanseob.com
+    api_key:
+      secure: e6XR8yhfx7MqcX0v4JcAARawdGi4oP0txWMTsxUPKxL5TkuHQLWWkEC8lEtY88U4uiNORLnMm3BlXJpejJ5DCqyo7JlMEtocOaDMcdIPPivSYWW/XXTJ8kSwT5E/bdY1nrZWmZ5ccAnOMFChOzJj3SMW42ApyaYNXSq8FMdtnXwdaaro4zLabXoUQSYscrczHZfZvkgRlLkWAByxDBChcnnhKRWfAyuOYhTXIi2r+QBbp4j3gr7qgKdQ35ENpkHm9eA/DbqXum9v7iOVkpU41ZbwvrPw/E8LbiCe1JybX18lrlt0+0Jg8dsZXFfXthCdDKuym2+JB4FK6EXvsBFMMHLsCm3mLjBxnhtmFrwr8K3cJMbtfxI1JT2g2H18QKdco58LvBYjcR8q6JDevgs9JefHRlBDA0Sr4Gr3WBE3vWT+lkqpRHK84s5Kwjv0oHVI+Oiy7hQIQSOWPVlgO8FxSFpHPsVyehjHTymeLEiMnvZRu9/bA+wz6meTT6QUVpl8Aiusqq09+ViyRL/mkWMmwWM+d1TFEDwiKDM8WEzRk0TGj2d0l0gj9zKqEBDLPF/FkrvpTQ6NdeQ6cK8JE1otlxV4tz+vHNWZNpGJn7wqKl+qWrrle1amZH0YBjwJb1IUfvJ6THJYBuybV/C+gVCssUb2dJjPSiv/K3ewn8z8l0A=
+    tag: latest
+    on:
+      condition: $LATEST != $CURRENT_VERSION
+      branch: master
+      repo: wanseob/solidity-bloom-filter
+  - provider: releases
+    prerelease: false
+    api_key:
+      secure: FvzebhAmsXUKx/9Sbpa68MO64T0WwZidWVzYd8+4jl+tN5Mp8+gg/BAevO7mNr22Wx3cyEBsG/e4nwmhV5G3TWfALJrWKClOqucf1y3hmIOZ/XtUrP833yYllsINHHn6Gg1TUKzYyLbS3syvOHruVdYGME0HXowl3I+H8K3rscaBpvtLWDxjQKZmuHe12zf34KupAp7GcQjaPvgYqU+/UoOIC15CcSte/EGPi+v9mZ6b4lgGOvn29kfstzQOQ71R0EqbL3hfFyzIb99ByDiPVbToz79I9FcKQfEdLzgJDaJZzlJqRAmAvUFMLkEHKLv1i6lFlS+zphPVoB0EPPqp7HblqF4o5bLAzIavz31N5u+yKevOLoyPQxfynSUncf7Q3wLo1axw/+gAiZLiBK82+U+/M/x/8oPq58lk21U1sY3ibBYAQNln0Jw5SLVgM+O/+QNNFlUbC4C94Qigz3kqG8CeIhq59IRU9c18EJN2P3p0s4RWp3Sq9PAsslg0mCXGLd+b7V0RvWl6jFoprQiCxSJN0cKatMPJisQ73e9wHdPC+bLoCS3x70owYeveflCyPbvyfA5PiN0KEWWX4zvmrkTKh5WIxrdn34zl6BMy9TSresbDty+zmzJ4Rk2UzoakChtfIfpUVs6MbtCP7RQAuX9qqhatC6W7LzRdSNSVFpY=
+    on:
+      tags: true
+      repo: wanseob/solidity-bloom-filter
+      branch: master
+  - provider: releases
+    prerelease: true
+    api_key:
+      secure: FvzebhAmsXUKx/9Sbpa68MO64T0WwZidWVzYd8+4jl+tN5Mp8+gg/BAevO7mNr22Wx3cyEBsG/e4nwmhV5G3TWfALJrWKClOqucf1y3hmIOZ/XtUrP833yYllsINHHn6Gg1TUKzYyLbS3syvOHruVdYGME0HXowl3I+H8K3rscaBpvtLWDxjQKZmuHe12zf34KupAp7GcQjaPvgYqU+/UoOIC15CcSte/EGPi+v9mZ6b4lgGOvn29kfstzQOQ71R0EqbL3hfFyzIb99ByDiPVbToz79I9FcKQfEdLzgJDaJZzlJqRAmAvUFMLkEHKLv1i6lFlS+zphPVoB0EPPqp7HblqF4o5bLAzIavz31N5u+yKevOLoyPQxfynSUncf7Q3wLo1axw/+gAiZLiBK82+U+/M/x/8oPq58lk21U1sY3ibBYAQNln0Jw5SLVgM+O/+QNNFlUbC4C94Qigz3kqG8CeIhq59IRU9c18EJN2P3p0s4RWp3Sq9PAsslg0mCXGLd+b7V0RvWl6jFoprQiCxSJN0cKatMPJisQ73e9wHdPC+bLoCS3x70owYeveflCyPbvyfA5PiN0KEWWX4zvmrkTKh5WIxrdn34zl6BMy9TSresbDty+zmzJ4Rk2UzoakChtfIfpUVs6MbtCP7RQAuX9qqhatC6W7LzRdSNSVFpY=
+    on:
+      tags: true
+      repo: wanseob/solidity-bloom-filter
+      branch: develop
