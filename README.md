@@ -3,7 +3,7 @@
 [![npm](https://img.shields.io/npm/v/solidity-bloom-filter/latest.svg)](https://www.npmjs.com/package/solidity-bloom-filter)
 [![Build Status](https://travis-ci.org/wanseob/solidity-bloom-filter.svg?branch=master)](https://travis-ci.org/wanseob/solidity-bloom-filter)
 
-Mainnet: `0x9de80828ff54e961a41c3b31ca6e8eceadc8aef4`
+Mainnet: [`0x9de80828ff54e961a41c3b31ca6e8eceadc8aef4`](https://etherscan.io/address/0x9de80828ff54e961a41c3b31ca6e8eceadc8aef4)
 
 ## Usage
 
