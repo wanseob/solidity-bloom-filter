@@ -1,10 +1,11 @@
 {
+  "name": "solidity-bloom-filter",
   "version": "1.0.0",
-  "main": "src/index.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/wanseob/npm-truffle-box.git"
+    "url": "git+https://github.com/wanseob/solidity-bloom-filter.git"
   },
+  "description": "This is a 256 bit based bloom filter library written in Solidity",
   "scripts": {
     "postinstall": "chmod +x scripts/*",
     "standard": ".\"/node_modules/.bin/standard\" test/** src/** --fix",
