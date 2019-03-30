@@ -69,4 +69,4 @@ contract TestBloomFilter {
 
 ## LICENSE
 
-MIT LICENSE
+Apache-2.0
